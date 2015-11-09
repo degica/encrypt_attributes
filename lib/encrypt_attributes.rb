@@ -73,7 +73,8 @@ module EncryptAttributes
       define_method(name) do
         encrypted = send("encrypted_#{name}")
         secret_key = options[:secret_key].is_a?(Symbol) ? self.send(options[:secret_key]) : options[:secret_key]
-        EncryptAttributes.decrypt_attribute(encrypted, secret_key, encryption_options_for(name))
+        value = EncryptAttributes.decrypt_attribute(encrypted, secret_key, encryption_options_for(name))
+        block_given? ? yield(value) : value
       end
 
       define_method("#{name}=") do |val|

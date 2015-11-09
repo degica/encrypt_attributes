@@ -6,13 +6,17 @@ class Target
                 :encrypted_serialized,
                 :encrypted_encoded,
                 :encrypted_serialized_encoded,
-                :encrypted_dynamic_key
+                :encrypted_dynamic_key,
+                :encrypted_wrapped_foo
 
   encrypted_attribute :foo, secret_key: 'secretkey'
   encrypted_attribute :serialized, secret_key: 'secretkey', serialize: true
   encrypted_attribute :encoded, secret_key: 'secretkey', encode: true
   encrypted_attribute :serialized_encoded, secret_key: 'secretkey', encode: true, serialize: true
   encrypted_attribute :dynamic_key, secret_key: :dynamic_secret_key
+  encrypted_attribute :wrapped_foo, secret_key: 'secretkey' do |value|
+    value + "bar"
+  end
 
   def dynamic_secret_key
     "foobar"
@@ -68,6 +72,14 @@ describe EncryptAttributes do
       target.serialized_encoded = value
       expect(target.encrypted_serialized_encoded).to be_instance_of String
       expect(target.serialized_encoded).to eq value
+    end
+  end
+
+  context 'when block is passed' do
+    it 'wraps return value in block' do
+      value = 'foo'
+      target.wrapped_foo = value
+      expect(target.wrapped_foo).to eq("#{value}bar")
     end
   end
 end

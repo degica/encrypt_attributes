@@ -39,6 +39,21 @@ module EncryptAttributes
         value = send(name)
         value.respond_to?(:empty?) ? !value.empty? : !!value
       end
+
+      # Define methods using serialized accessors option
+      if options[:serialize].is_a?(Hash) && options[:serialize].has_key?(:accessors) && options[:serialize][:accessors].is_a?(Array)
+        options[:serialize][:accessors].map(&:to_sym).each do |accessor|
+          accessor_name = "#{name}_#{accessor}"
+
+          define_method(accessor_name) do
+            send(name)[accessor]
+          end
+
+          define_method("#{accessor_name}=") do |val|
+            send("#{name}=", { "#{accessor}": val })
+          end
+        end
+      end
     end
   end
 

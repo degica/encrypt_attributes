@@ -1,4 +1,5 @@
 require "encrypt_attributes/version"
+require "encrypt_attributes/attribute"
 require 'yaml'
 require 'base64'
 require 'gibberish'
@@ -6,54 +7,6 @@ require 'active_support'
 
 module EncryptAttributes
   extend ActiveSupport::Concern
-
-  def self.encrypt_attribute(value, secret_key, options)
-    return nil if value.nil?
-
-    value = serialize(value) if options[:serialize]
-    value = encode(value)    if options[:encode]
-
-    encrypt(value, secret_key)
-  end
-
-  def self.decrypt_attribute(value, secret_key, options)
-    return nil if value.nil?
-
-    decrypted = decrypt(value, secret_key)
-    decrypted = decode(decrypted)      if options[:encode]
-    decrypted = deserialize(decrypted) if options[:serialize]
-
-    decrypted
-  end
-
-  def self.serialize(obj)
-    YAML.dump(obj)
-  end
-
-  def self.deserialize(s)
-    YAML.load(s)
-  end
-
-  def self.encode(s)
-    Base64.encode64(s)
-  end
-
-  def self.decode(s)
-    decoded = Base64.decode64(s)
-    decoded.encode('UTF-8', 'UTF-8')
-  end
-
-  def self.encrypt(data, secret_key)
-    # Gibberish's default encryption mode is aes-256-cbc
-    # salt and iv(initialization vector) is automatically generated and embedded in encrypted value
-    cipher = Gibberish::AES.new(secret_key)
-    cipher.encrypt(data)
-  end
-
-  def self.decrypt(data, secret_key)
-    cipher = Gibberish::AES.new(secret_key)
-    cipher.decrypt(data)
-  end
 
   module ClassMethods
     def encryption_targets
@@ -73,12 +26,12 @@ module EncryptAttributes
       define_method(name) do
         encrypted = send("encrypted_#{name}")
         secret_key = options[:secret_key].is_a?(Symbol) ? self.send(options[:secret_key]) : options[:secret_key]
-        EncryptAttributes.decrypt_attribute(encrypted, secret_key, encryption_options_for(name))
+        Attribute.new(encrypted, secret_key, encryption_options_for(name)).decrypt
       end
 
       define_method("#{name}=") do |val|
         secret_key = options[:secret_key].is_a?(Symbol) ? self.send(options[:secret_key]) : options[:secret_key]
-        encrypted = EncryptAttributes.encrypt_attribute(val, secret_key, encryption_options_for(name))
+        encrypted = Attribute.new(val, secret_key, encryption_options_for(name)).encrypt
         send("encrypted_#{name}=", encrypted)
       end
 

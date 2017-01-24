@@ -46,7 +46,7 @@ module EncryptAttributes
           accessor_name = "#{name}_#{accessor}"
 
           define_method(accessor_name) do
-            send(name)[accessor]
+            (send(name) || {})[accessor]
           end
 
           define_method("#{accessor_name}=") do |val|

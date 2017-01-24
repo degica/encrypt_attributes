@@ -6,13 +6,15 @@ class Target
                 :encrypted_serialized,
                 :encrypted_encoded,
                 :encrypted_serialized_encoded,
-                :encrypted_dynamic_key
+                :encrypted_dynamic_key,
+                :encrypted_create_accessors
 
   encrypted_attribute :foo, secret_key: 'secretkey'
   encrypted_attribute :serialized, secret_key: 'secretkey', serialize: true
   encrypted_attribute :encoded, secret_key: 'secretkey', encode: true
   encrypted_attribute :serialized_encoded, secret_key: 'secretkey', encode: true, serialize: true
   encrypted_attribute :dynamic_key, secret_key: :dynamic_secret_key
+  encrypted_attribute :create_accessors, secret_key: 'secretkey', serialize: { accessors: [:attribute1, :attribute2] }
 
   def dynamic_secret_key
     "foobar"
@@ -68,6 +70,22 @@ describe EncryptAttributes do
       target.serialized_encoded = value
       expect(target.encrypted_serialized_encoded).to be_instance_of String
       expect(target.serialized_encoded).to eq value
+    end
+  end
+
+  context 'when :accessors option is specified in :serialize option' do
+    it 'creates accessors' do
+      value = 'あいうえお'
+
+      target.create_accessors_attribute1 = value
+      expect(target.create_accessors).to eq ({ attribute1: value })
+      expect(target.create_accessors_attribute1).to eq value
+
+      target.create_accessors_attribute2 = "foo"
+      expect(target.create_accessors).to eq ({ attribute1: value, attribute2: "foo" })
+
+      target.create_accessors_attribute2 = "baz"
+      expect(target.create_accessors).to eq ({ attribute1: value, attribute2: "baz" })
     end
   end
 end

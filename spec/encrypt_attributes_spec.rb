@@ -75,6 +75,8 @@ describe EncryptAttributes do
 
   context 'when :accessors option is specified in :serialize option' do
     it 'creates accessors' do
+      expect(target.create_accessors_attribute1).to eq nil
+
       value = 'あいうえお'
 
       target.create_accessors_attribute1 = value

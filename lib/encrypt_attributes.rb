@@ -50,7 +50,7 @@ module EncryptAttributes
           end
 
           define_method("#{accessor_name}=") do |val|
-            send("#{name}=", { "#{accessor}": val })
+            send("#{name}=", (send(name) || {}).merge!({ accessor.to_sym => val }))
           end
         end
       end

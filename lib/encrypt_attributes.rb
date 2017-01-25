@@ -21,7 +21,7 @@ module EncryptAttributes
     end
 
     def encrypted_attribute(name, options={})
-      encryption_targets[name.to_sym] = default_encryption_options.merge options
+      encryption_targets[name.to_s] = default_encryption_options.merge options
 
       define_method(name) do
         encrypted = send("encrypted_#{name}")
@@ -42,7 +42,7 @@ module EncryptAttributes
 
       # Define methods using serialized accessors option
       if options[:serialize].is_a?(Hash) && options[:serialize].has_key?(:accessors) && options[:serialize][:accessors].is_a?(Array)
-        options[:serialize][:accessors].map(&:to_sym).each do |accessor|
+        options[:serialize][:accessors].map(&:to_s).each do |accessor|
           accessor_name = "#{name}_#{accessor}"
 
           define_method(accessor_name) do
@@ -50,7 +50,7 @@ module EncryptAttributes
           end
 
           define_method("#{accessor_name}=") do |val|
-            send("#{name}=", (send(name) || {}).merge!({ accessor.to_sym => val }))
+            send("#{name}=", (send(name) || {}).merge!({ accessor.to_s => val }))
           end
         end
       end
@@ -64,6 +64,6 @@ module EncryptAttributes
   end
 
   def encryption_options_for(attr_name)
-    encryption_targets[attr_name.to_sym]
+    encryption_targets[attr_name.to_s]
   end
 end

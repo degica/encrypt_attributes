@@ -1,7 +1,9 @@
 require "encrypt_attributes/version"
 require "encrypt_attributes/attribute"
+require "encrypt_attributes/encrypt/aes"
 require 'yaml'
 require 'base64'
+require 'openssl'
 require 'gibberish'
 require 'active_support'
 

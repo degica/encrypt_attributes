@@ -13,13 +13,13 @@ module EncryptAttributes
 
       # Gibberish's default encryption mode is aes-256-cbc
       # salt and iv(initialization vector) is automatically generated and embedded in encrypted @value
-      Gibberish::AES.new(@secret_key).encrypt(value)
+      Encrypt::AES.new(@secret_key).encrypt(value)
     end
 
     def decrypt
       return nil if @value.nil?
 
-      decrypted = Gibberish::AES.new(@secret_key).decrypt(@value)
+      decrypted = Encrypt::AES.new(@secret_key).decrypt(@value)
       decrypted = decode(decrypted)      if @options[:encode]
       decrypted = deserialize(decrypted) if @options[:serialize]
 

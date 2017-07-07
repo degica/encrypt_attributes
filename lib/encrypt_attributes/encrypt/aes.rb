@@ -10,7 +10,6 @@ module EncryptAttributes
         @cipher.encrypt
         salt = generate_salt
         @cipher.pkcs5_keyivgen(@password, salt)
-
         e = @cipher.update(data) + @cipher.final
         e = "Salted__#{salt}#{e}" #OpenSSL compatible
         Base64.encode64(e)
@@ -23,14 +22,13 @@ module EncryptAttributes
 
         @cipher.pkcs5_keyivgen(@password, salt)
         @cipher.decrypt
-
         @cipher.update(data) + @cipher.final
       end
 
       private
 
       def generate_salt
-        salt = 8.times.map { rand(255).chr }.join
+        8.times.map { rand(255).chr }.join
       end
     end
   end

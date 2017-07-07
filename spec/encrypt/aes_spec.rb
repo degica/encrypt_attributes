@@ -3,7 +3,7 @@ require 'spec_helper'
 describe EncryptAttributes::Encrypt::AES do
   let(:password) { "password" }
   let(:data) { "data" }
-  let(:encrypted_data) { "U2FsdGVkX19hYmNkZWZnaE67bR8AgXL/LM+fnAQ/GVg=\n" }
+  let(:encrypted_data) { "U2FsdGVkX19hYmNkZWZnaNP1CILqdQwlmuFn9x/Yr9s=\n" }
 
   subject { EncryptAttributes::Encrypt::AES.new(password) }
 

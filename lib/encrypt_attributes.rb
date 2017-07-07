@@ -4,7 +4,6 @@ require "encrypt_attributes/encrypt/aes"
 require 'yaml'
 require 'base64'
 require 'openssl'
-require 'gibberish'
 require 'active_support'
 
 module EncryptAttributes

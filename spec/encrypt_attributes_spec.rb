@@ -3,6 +3,7 @@ require 'spec_helper'
 class Target
   include EncryptAttributes
   attr_accessor :encrypted_foo,
+                :encrypted_blank,
                 :encrypted_serialized,
                 :encrypted_encoded,
                 :encrypted_serialized_encoded,
@@ -10,6 +11,7 @@ class Target
                 :encrypted_create_accessors
 
   encrypted_attribute :foo, secret_key: 'secretkey'
+  encrypted_attribute :blank, secret_key: 'secretkey', allow_blank: false
   encrypted_attribute :serialized, secret_key: 'secretkey', serialize: true
   encrypted_attribute :encoded, secret_key: 'secretkey', encode: true
   encrypted_attribute :serialized_encoded, secret_key: 'secretkey', encode: true, serialize: true
@@ -35,6 +37,22 @@ describe EncryptAttributes do
     target.foo = value
     expect(target.encrypted_foo).to be_instance_of String
     expect(target.foo).to eq value
+  end
+
+  context "when :allow_blank options is specified" do
+    it "returns value when nil" do
+      value =  nil
+      target.blank = value
+      expect(target.encrypted_blank).to be_instance_of NilClass
+      expect(target.blank).to eq value
+    end
+
+    it "returns value when empty" do
+      value =  ''
+      target.blank = value
+      expect(target.encrypted_blank).to be_instance_of String
+      expect(target.blank).to eq value
+    end
   end
 
   context "when secret_key options is a symbol" do

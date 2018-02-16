@@ -18,7 +18,7 @@ module EncryptAttributes
       {
         encode: false,
         serialize: false,
-        allow_blank: true
+        allow_empty: true
       }
     end
 

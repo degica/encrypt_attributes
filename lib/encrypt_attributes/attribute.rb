@@ -5,7 +5,7 @@ module EncryptAttributes
     end
 
     def encrypt
-      return @value unless not_empty?(@value)
+      return @value if @value.nil? || (!@options[:allow_empty] && @value.empty?)
       value = @value
 
       value = serialize(value) if @options[:serialize]
@@ -17,7 +17,7 @@ module EncryptAttributes
     end
 
     def decrypt
-      return @value unless not_empty?(@value)
+      return @value if @value.nil? || (!@options[:allow_empty] && @value.empty?)
 
       decrypted = Encrypt::AES.new(@secret_key).decrypt(@value)
       decrypted = decode(decrypted)      if @options[:encode]
@@ -43,11 +43,6 @@ module EncryptAttributes
     def decode(s)
       decoded = Base64.decode64(s)
       decoded.encode('UTF-8', 'UTF-8')
-    end
-
-    # https://github.com/attr-encrypted/attr_encrypted/blob/a185caba554df8a17b8de205030a3ba033529a82/lib/attr_encrypted.rb#L274-L276
-    def not_empty?(value)
-      @options[:allow_blank] && !value.nil? && !(value.is_a?(String) && value.empty?)
     end
   end
 end

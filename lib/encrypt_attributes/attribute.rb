@@ -5,7 +5,7 @@ module EncryptAttributes
     end
 
     def encrypt
-      return nil if @value.nil?
+      return @value if @value.nil? || (!@options[:allow_empty] && @value.empty?)
       value = @value
 
       value = serialize(value) if @options[:serialize]
@@ -17,7 +17,7 @@ module EncryptAttributes
     end
 
     def decrypt
-      return nil if @value.nil?
+      return @value if @value.nil? || (!@options[:allow_empty] && @value.empty?)
 
       decrypted = Encrypt::AES.new(@secret_key).decrypt(@value)
       decrypted = decode(decrypted)      if @options[:encode]

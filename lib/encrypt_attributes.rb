@@ -17,7 +17,8 @@ module EncryptAttributes
     def default_encryption_options
       {
         encode: false,
-        serialize: false
+        serialize: false,
+        allow_empty: true
       }
     end
 

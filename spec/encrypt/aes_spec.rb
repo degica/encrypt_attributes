@@ -17,5 +17,6 @@ describe EncryptAttributes::Encrypt::AES do
 
   describe "#decrypt" do
     it { expect(subject.decrypt(encrypted_data)).to eq data }
+    it { expect(subject.decrypt('')).to eq nil }
   end
 end

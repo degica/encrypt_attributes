@@ -20,6 +20,8 @@ module EncryptAttributes
         salt = data[8..15]
         data = data[16..-1]
 
+        return nil if data.nil?
+
         @cipher.pkcs5_keyivgen(@password, salt, 1)
         @cipher.decrypt
         @cipher.update(data) + @cipher.final

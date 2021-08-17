@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module EncryptAttributes
   module Encrypt
     class AES
@@ -30,7 +32,7 @@ module EncryptAttributes
       private
 
       def generate_salt
-        8.times.map { rand(255).chr }.join
+        8.times.map { SecureRandom.rand(255).chr }.join
       end
     end
   end

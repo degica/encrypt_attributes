@@ -29,6 +29,8 @@ module EncryptAttributes
       end
 
       def decrypt_legacy(b64_ciphertext)
+        raise 'Unsupported in Ruby >= 3.0' if RUBY_VERSION.to_f >= 3.0
+
         cipher = OpenSSL::Cipher.new('aes-256-cbc')
         data = Base64.decode64(b64_ciphertext)
         salt = data[8..15]

@@ -26,7 +26,10 @@ describe EncryptAttributes::Encrypt::AES do
   end
 
   describe '#decrypt' do
-    it 'decrypts legacy ciphertexts' do
+    it(
+      'decrypts legacy ciphertexts (only on Ruby 2.7)',
+      skip: ('Unsupported on Ruby 3' if RUBY_VERSION.to_f >= 3.0)
+    ) do
       expect(subject.decrypt(legacy_ciphertext)).to eq plaintext
     end
 

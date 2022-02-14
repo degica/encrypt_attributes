@@ -1,8 +1,6 @@
 # EncryptAttributes
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/encrypt_attributes`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+EncryptAttributes encrypts Rails model's attributes before storing to DB.
 
 ## Installation
 
@@ -22,7 +20,43 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Add a column to store encrypted attributes.
+The name of the column has to begin with `encrypted_`
+
+example:
+
+```ruby
+class AddEncryptedEmailToUsers < ActiveRecord::Migration[6.1]
+  def change
+    add_column :users, :encrypted_email, :string
+  end
+end
+```
+
+Then include `EncryptAttributes` in the model, and call `encrypted_attribute` with an attribute name and a secret key.
+This secret key is used to encrypt or decrypt the attribute.
+
+```ruby
+class User < ApplicationRecord
+  include EncryptAttributes
+
+  encrypted_attribute :email, secret_key: ENV['ATTRIBUTES_SECRET_KEY']
+end
+```
+
+Then you can call `User#email` or `User#email=`
+
+```ruby
+User.new(email: 'foo@example.com').email
+# => "foo@example.com"
+
+user = User.new
+user.email = 'foo@example.com'
+user.email
+# => "foo@example.com"
+```
+
+When it's persisted, Database will only store encrypted values.
 
 ## Development
 

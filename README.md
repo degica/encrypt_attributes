@@ -23,12 +23,14 @@ Or install it yourself as:
 Add a column to store encrypted attributes.
 The name of the column has to begin with `encrypted_`
 
+NOTE: It is recommended that the text type be used because the string stored in the database will be longer than the string before encryption.
+
 example:
 
 ```ruby
 class AddEncryptedEmailToUsers < ActiveRecord::Migration[6.1]
   def change
-    add_column :users, :encrypted_email, :string
+    add_column :users, :encrypted_email, :text
   end
 end
 ```
